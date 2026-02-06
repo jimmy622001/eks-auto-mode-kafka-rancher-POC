@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 locals {
   cluster_name = var.cluster_name
 }
@@ -56,6 +58,25 @@ resource "aws_vpc_endpoint" "ssm" {
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
   private_dns_enabled = true
 
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = "*",
+        Action = [
+          "ssm:*"
+        ],
+        Resource = "*",
+        Condition = {
+          StringEquals = {
+            "aws:PrincipalAccount": "${data.aws_caller_identity.current.account_id}"
+          }
+        }
+      }
+    ]
+  })
+
   tags = {
     Name = "${var.cluster_name}-ssm-endpoint"
   }
@@ -69,6 +90,25 @@ resource "aws_vpc_endpoint" "ssmmessages" {
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
   private_dns_enabled = true
 
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = "*",
+        Action = [
+          "ssmmessages:*"
+        ],
+        Resource = "*",
+        Condition = {
+          StringEquals = {
+            "aws:PrincipalAccount": "${data.aws_caller_identity.current.account_id}"
+          }
+        }
+      }
+    ]
+  })
+
   tags = {
     Name = "${var.cluster_name}-ssmmessages-endpoint"
   }
@@ -81,6 +121,25 @@ resource "aws_vpc_endpoint" "ec2messages" {
   subnet_ids          = module.vpc_eks.private_subnets
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
   private_dns_enabled = true
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = "*",
+        Action = [
+          "ec2messages:*"
+        ],
+        Resource = "*",
+        Condition = {
+          StringEquals = {
+            "aws:PrincipalAccount": "${data.aws_caller_identity.current.account_id}"
+          }
+        }
+      }
+    ]
+  })
 
   tags = {
     Name = "${var.cluster_name}-ec2messages-endpoint"
