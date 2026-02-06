@@ -45,6 +45,12 @@ variable "endpoint_public_access" {
   default     = true
 }
 
+variable "public_access_cidrs" {
+  type        = list(string)
+  description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint"
+  default     = ["0.0.0.0/0"]
+}
+
 variable "tags" {
   type        = map(string)
   description = "Tags to apply to resources"

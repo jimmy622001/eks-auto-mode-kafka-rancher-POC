@@ -70,6 +70,9 @@ module "eks" {
   availability_zones = var.availability_zones
   vpc_cidr           = var.vpc_cidr
   environment        = var.environment
+  endpoint_public_access = var.endpoint_public_access
+  endpoint_private_access = var.endpoint_private_access
+  public_access_cidrs = var.public_access_cidrs
 
   # Node group configuration from environment-specific settings
   general_purpose_node_group = {
@@ -156,6 +159,12 @@ module "monitoring" {
   environment            = var.environment
   cluster_name           = var.cluster_name
   grafana_admin_password = var.grafana_admin_password
+
+  # Loki configuration
+  loki_storage_size     = var.loki_storage_size
+  loki_retention_period = var.loki_retention_period
+  loki_replicas         = var.loki_replicas
+  loki_storage_class    = var.loki_storage_class
 }
 
 # Jenkins CI/CD with cost optimization

@@ -124,6 +124,12 @@ variable "endpoint_public_access" {
   description = "Enable public API server endpoint access for EKS"
   type        = bool
 }
+
+variable "public_access_cidrs" {
+  description = "List of CIDR blocks which can access the EKS API server public endpoint"
+  type        = list(string)
+  default     = ["192.168.0.0/16"]  # Example: restrict to private IP range
+}
 variable "grafana_admin_password" {
   description = "Admin password for Grafana"
   type        = string
@@ -245,4 +251,29 @@ variable "notification_email" {
   description = "Email address for build notifications"
   type        = string
   default     = ""
+}
+
+# Loki Configuration Variables
+variable "loki_storage_size" {
+  description = "Size of the Loki persistent volume"
+  type        = string
+  default     = "50Gi"
+}
+
+variable "loki_retention_period" {
+  description = "Retention period for Loki logs in days"
+  type        = number
+  default     = 14
+}
+
+variable "loki_replicas" {
+  description = "Number of Loki replicas for high availability"
+  type        = number
+  default     = 1
+}
+
+variable "loki_storage_class" {
+  description = "Storage class to use for Loki persistent volumes"
+  type        = string
+  default     = "gp2"
 }
